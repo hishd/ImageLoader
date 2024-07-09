@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// A helper class which is used to access the CachedImageLoader and load the image to the ImageView
-final class UIImageLoader {
+public final class UIImageLoader {
     public static let shared = UIImageLoader()
     
     private let cachedImageLoader = CachedImageLoader.publicCache
@@ -22,7 +22,7 @@ final class UIImageLoader {
     ///    - url: The URL of the resource
     ///    - imageView: The ImageView instance which the image should be loaded into
     ///    - errorPlaceholderImage: A placeholder image which is loaded into the ImageView if the operation fails
-    func load(from url: NSURL, for imageView: UIImageView, errorPlaceholderImage: UIImage? = nil) throws {
+    public func load(from url: NSURL, for imageView: UIImageView, errorPlaceholderImage: UIImage? = nil) throws {
         let spinner = UIActivityIndicatorView(style: .medium)
         spinner.translatesAutoresizingMaskIntoConstraints = false
         spinner.startAnimating()
@@ -63,7 +63,7 @@ final class UIImageLoader {
     /// Cancelling the image loading operation if it's no longer needed (eg: preparing the cells for reusing)
     /// - Parameters:
     ///  - imageView: The ImageView instance which the request should be cancelled with
-    func cancel(for imageView: UIImageView) {
+    public func cancel(for imageView: UIImageView) {
         if let token = self.uuidDict[imageView] {
             cachedImageLoader.cancelLoading(id: token)
             self.uuidDict.removeValue(forKey: imageView)
@@ -71,7 +71,7 @@ final class UIImageLoader {
     }
     
     //// Cancelling all image loading operations of the ImageViews
-    func cancellAll() {
+    public func cancelAll() {
         uuidDict.keys.forEach {
             self.cancel(for: $0)
         }

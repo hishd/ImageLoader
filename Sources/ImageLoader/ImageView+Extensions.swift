@@ -11,11 +11,11 @@ import UIKit
 /// Extensions for the UIIMageView type to enable calling the declared methods from Self
 extension UIImageView {
     /// Loading the image using the provided URL through UIImageLoader
-    func loadImage(from url: NSURL, errorPlaceholderImage: UIImage? = nil) throws {
+    public func loadImage(from url: NSURL, errorPlaceholderImage: UIImage? = nil) throws {
         try UIImageLoader.shared.load(from: url, for: self, errorPlaceholderImage: errorPlaceholderImage)
     }
     /// Cancelling the image loading through UIImageLoader
-    func cancelLoading() {
+    public func cancelLoading() {
         UIImageLoader.shared.cancel(for: self)
     }
 }
