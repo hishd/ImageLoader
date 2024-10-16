@@ -33,6 +33,16 @@ do {
 }
 ```
 
+**NOTE :** You can also load a thumbnail of the loaded image into the image view as below. But it requires the minimum os target iOS 15.0.
+
+```swift
+do {
+    try imageView.loadThumbnail(from: url, of: CGSize(width: 100, height: 160), errorPlaceholderImage: UIImage(named: "placeholder"))
+} catch {
+    print("Failed to load image thumbnail: \(error.localizedDescription)")
+}
+```
+
 ### Cancelling Image Loading
 
 In cases where the  `UIImageView`  is reused (e.g., in a table or collection view), you may want to cancel any ongoing image loading.
@@ -109,3 +119,5 @@ try? imageView.loadImage(from: url, errorPlaceholderImage: placeholder)
     
 -   **`cancelLoading()`**  
     Cancels the image loading operation for the  `UIImageView`.
+
+
