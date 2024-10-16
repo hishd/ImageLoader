@@ -60,6 +60,83 @@ public final class UIImageLoader {
         }
     }
     
+    private func finishImageWithAnimation(_ imageView: UIImageView, image: UIImage?) {
+        DispatchQueue.main.async {
+            imageView.alpha = 0
+        }
+            
+        if #available(iOS 15.0, *) {
+            image?.prepareForDisplay { preparedImage in
+                DispatchQueue.main.async {
+                    imageView.image = preparedImage
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                imageView.image = image
+            }
+        }
+        
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.75) {
+                imageView.alpha = 1
+            }
+        }
+    }
+    
+    @available(iOS 15.0, *)
+    public func loadThumnail(from url: NSURL, of size: CGSize, into imageView: UIImageView, errorPlaceholder: UIImage? = nil) throws {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.startAnimating()
+        
+        imageView.addSubview(spinner)
+        spinner.centerXAnchor.constraint(equalTo: imageView.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        
+        let token = try cachedImageLoader.loadImage(from: url) { result in
+            defer {
+                self.uuidDict.removeValue(forKey: imageView)
+            }
+            
+            switch result {
+            case .success(let image):
+                self.finishThumbnailWithAnimation(imageView, size: size, image: image)
+            case .failure(let error):
+                print(error.localizedDescription)
+                self.finishThumbnailWithAnimation(imageView, size: size, image: errorPlaceholder)
+            }
+            
+            DispatchQueue.main.async {
+                spinner.stopAnimating()
+                spinner.removeFromSuperview()
+            }
+        }
+        
+        if let token {
+            self.uuidDict[imageView] = token
+        }
+    }
+    
+    @available(iOS 15.0, *)
+    private func finishThumbnailWithAnimation(_ imageView: UIImageView, size: CGSize, image: UIImage?) {
+        DispatchQueue.main.async {
+            imageView.alpha = 0
+        }
+            
+        image?.prepareThumbnail(of: size) { preparedImage in
+            DispatchQueue.main.async {
+                imageView.image = preparedImage
+            }
+        }
+            
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.75) {
+                imageView.alpha = 1
+            }
+        }
+    }
+    
     /// Cancelling the image loading operation if it's no longer needed (eg: preparing the cells for reusing)
     /// - Parameters:
     ///  - imageView: The ImageView instance which the request should be cancelled with

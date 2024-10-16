@@ -14,6 +14,12 @@ extension UIImageView {
     public func loadImage(from url: NSURL, errorPlaceholderImage: UIImage? = nil) throws {
         try UIImageLoader.shared.load(from: url, for: self, errorPlaceholderImage: errorPlaceholderImage)
     }
+    
+    @available (iOS 15.0, *)
+    public func loadThumbnail(from url: NSURL, of size: CGSize, errorPlaceholderImage: UIImage? = nil) throws {
+        try UIImageLoader.shared.loadThumnail(from: url, of: size, into: self, errorPlaceholder: errorPlaceholderImage)
+    }
+    
     /// Cancelling the image loading through UIImageLoader
     public func cancelLoading() {
         UIImageLoader.shared.cancel(for: self)
